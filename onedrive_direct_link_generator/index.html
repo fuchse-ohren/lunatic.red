@@ -56,5 +56,17 @@
 				}
 			}
 		);
+		document.querySelector('#copy').addEventListener(
+			'click',
+			(event)=>{
+				navigator.clipboard.writeText(document.querySelector("#output").value)
+					.then(()=>{
+						alert("直リンURLをクリップボードにコピーしました");
+					})
+					.catch(e=>{
+						alert("コピーがブラウザに制限されています。\n手動でコピーをお願いします");
+					})
+			}
+		);
 	</SCRIPT>
 </HTML>
