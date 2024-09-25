@@ -1,0 +1,14 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:security01@kitsune.aleeas.com
+Expires: 2034-07-14T14:59:00.000Z
+Encryption: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xd8ff3041c278e1b75ed0b682bcef45cb86c4bb38
+Preferred-Languages: ja
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQTY/zBBwnjht17QtoK870XLhsS7OAUCZpNaEQAKCRC870XLhsS7
+OHPiAQCToNC1NSrpc4gHZI2sCdy/yzAypCjvThbAbbQSTHK2/QEAv3A5DBRL2kYi
+ujTObLHTrYalMf4ej+25o3Z+grkw/QQ=
+=V8XX
+-----END PGP SIGNATURE-----
