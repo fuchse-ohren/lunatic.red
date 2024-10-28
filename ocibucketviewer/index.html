@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCI Object Storage File List</title>
+</head>
+<body>
+  <h1>ファイル一覧</h1>
+  <ul id="file-list"></ul>
+
+  <script>
+    // フラグメントから「バケットID」「プライベートキー」「パス」を取得
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const bucketId = hashParams.get("bucketId");
+    const privateKey = hashParams.get("privateKey");
+    const path = hashParams.get("path");
+
+    if (bucketId && privateKey && path) {
+      // ファイル一覧取得URLの生成
+      const apiUrl = `https://${bucketId}.objectstorage.ap-tokyo-1.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/`;
+
+      // ファイル一覧を取得
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("ファイル一覧の取得に失敗しました");
+          }
+          return response.json();
+        })
+        .then(data => {
+          const fileList = document.getElementById("file-list");
+
+          // ファイル一覧を描写
+          data.objects.forEach(file => {
+            const listItem = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = `https://${bucketId}.objectstorage.ap-tokyo-1.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/${file.name}`;
+            link.textContent = file.name;
+            link.download = file.name; // ダウンロードリンクとして設定
+            listItem.appendChild(link);
+            fileList.appendChild(listItem);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          alert("ファイル一覧の取得に失敗しました");
+        });
+    } else {
+      alert("バケットID、プライベートキー、パスが指定されていません");
+    }
+  </script>
+</body>
+</html>
