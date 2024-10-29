@@ -4,10 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OCI Object Storage File List</title>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-  <h1>ファイル一覧</h1>
-  <ul id="file-list"></ul>
+
+  <nav>
+    <div class="nav-wrapper">
+      <li class="brand-logo" style="padding:0px 0px 0px 10px;">ファイル一覧</li>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+	<li id="path_view" style="padding:0px 10px 0px 0px;"></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="row" id="file-list">
+  </div>
 
   <script>
     // フラグメントから「バケットID」「プライベートキー」「パス」を取得
@@ -15,10 +30,14 @@
     const bucketId = hashParams.get("bucketId");
     const privateKey = hashParams.get("privateKey");
     const path = hashParams.get("path");
+    const region = hashParams.get("region");
+
+    // ナビゲーションバーに表示
+    document.getElementById('path_view').innerText = `${region} > ${bucketId} > ${path}`;
 
     if (bucketId && privateKey && path) {
       // ファイル一覧取得URLの生成
-      const apiUrl = `https://${bucketId}.objectstorage.ap-tokyo-1.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/`;
+      const apiUrl = `https://${bucketId}.objectstorage.${region}.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/`;
 
       // ファイル一覧を取得
       fetch(apiUrl)
@@ -33,13 +52,61 @@
 
           // ファイル一覧を描写
           data.objects.forEach(file => {
-            const listItem = document.createElement("li");
-            const link = document.createElement("a");
-            link.href = `https://${bucketId}.objectstorage.ap-tokyo-1.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/${file.name}`;
-            link.textContent = file.name;
-            link.download = file.name; // ダウンロードリンクとして設定
-            listItem.appendChild(link);
-            fileList.appendChild(listItem);
+			
+			// div.col.s6.m3
+			const col = document.createElement('div');
+			col.className = 'col s6 m4 l3 xl2';
+			
+			// div.card
+			const card = document.createElement('div');
+			card.className = 'card';
+			
+			// div.card-image
+			const cardImage = document.createElement('div');
+			cardImage.className = 'card-image';
+			
+			// SVG
+			const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			svg.setAttribute('height', '100%');
+			svg.setAttribute('viewBox', '0 -960 960 960');
+			svg.setAttribute('width', '100%');
+			svg.setAttribute('fill', '#5f6368');
+			
+			const svgpath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+			svgpath.setAttribute('d', 'M640-480v-80h80v80h-80Zm0 80h-80v-80h80v80Zm0 80v-80h80v80h-80ZM447-640l-80-80H160v480h400v-80h80v80h160v-400H640v80h-80v-80H447ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80v-480 480Z');
+			
+			svg.appendChild(svgpath);
+			cardImage.appendChild(svg);
+			
+			// a.btn-floating
+			const btn = document.createElement('a');
+			btn.className = 'btn-floating halfway-fab waves-effect waves-light red';
+			btn.href = `https://${bucketId}.objectstorage.${region}.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/${file.name}`;
+			btn.download = file.name;
+			
+			const icon = document.createElement('i');
+			icon.className = 'material-icons';
+			icon.textContent = 'download';
+			
+			btn.appendChild(icon);
+			cardImage.appendChild(btn);
+			
+			// div.card-content
+			const cardContent = document.createElement('div');
+			cardContent.className = 'card-content';
+			cardContent.style.overflowWrap = 'break-word';
+			
+			// p.flow-text
+			const p = document.createElement('p');
+			p.className = 'flow-text';
+			p.textContent = file.name;
+			
+			cardContent.appendChild(p);
+			card.appendChild(cardImage);
+			card.appendChild(cardContent);
+			col.appendChild(card);
+            fileList.appendChild(col);
+
           });
         })
         .catch(error => {
