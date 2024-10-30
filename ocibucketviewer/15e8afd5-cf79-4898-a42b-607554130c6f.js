@@ -1,18 +1,18 @@
 // フラグメントから「バケットID」「プライベートキー」「パス」を取得
 const hashParams = new URLSearchParams(window.location.hash.substring(1));
-const bucketId = hashParams.get("bucketId");
-const privateKey = hashParams.get("privateKey");
+const ns = hashParams.get("ns");
+const pk = hashParams.get("pk");
 const path = hashParams.get("path");
-const region = hashParams.get("region");
+const reg = hashParams.get("reg");
 
-if (bucketId && privateKey && path && region) {
+if (ns && pk && path && reg) {
   // ナビゲーションバーに表示
-  document.getElementById('region').innerText = region;
-  document.getElementById('bucket').innerText = bucketId;
+  document.getElementById('reg').innerText = reg;
+  document.getElementById('ns').innerText = ns;
   document.getElementById('path').innerText = path;
 
   // ファイル一覧取得URLの生成
-  const apiUrl = `https://${bucketId}.objectstorage.${region}.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/`;
+  const apiUrl = `https://${ns}.objectstorage.${reg}.oci.customer-oci.com/p/${pk}/n/${ns}/b/${path}/o/`;
 
   // ファイル一覧を取得
   fetch(apiUrl)
@@ -56,7 +56,7 @@ if (bucketId && privateKey && path && region) {
 		// a.btn-floating
 		const btn = document.createElement('a');
 		btn.className = 'btn-floating halfway-fab waves-effect waves-light red';
-		btn.href = `https://${bucketId}.objectstorage.${region}.oci.customer-oci.com/p/${privateKey}/n/${bucketId}/b/${path}/o/${file.name}`;
+		btn.href = `https://${ns}.objectstorage.${reg}.oci.customer-oci.com/p/${pk}/n/${ns}/b/${path}/o/${file.name}`;
 		btn.download = file.name;
 		
 		const icon = document.createElement('i');
@@ -89,5 +89,5 @@ if (bucketId && privateKey && path && region) {
 	  M.toast({html: 'ファイル一覧の取得に失敗しました'});
     });
 } else {
-	M.toast({html: 'バケットID、プライベートキー、パス、リージョンが指定されていません'});
+	M.toast({html: 'ネームスペース，が指定されていません'});
 }
